@@ -1,16 +1,10 @@
-import os
-from os.path import join, dirname
-from dotenv import load_dotenv
-
 from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 from datetime import datetime
 
-MONGODB_URI = os.environ.get("MONGODB_URI")
-DB_NAME =  os.environ.get("DB_NAME")
-
-client = MongoClient(MONGODB_URI)
-db = client[DB_NAME]
+connect_string = 'mongodb+srv://elinawati785:jadiorangsukses78@cluster0.3lv71ny.mongodb.net/test'
+client = MongoClient(connect_string)
+db = client.dbsparta
 
 app = Flask(__name__)
 
@@ -41,12 +35,16 @@ def save_diary():
     profilename = f'static/profile-{mytime}.{extension}'
     profile.save(profilename)
 
+    time = today.strftime('%Y.%m.%d')
+
     doc = {
         'file' : filename,
         'profile' : profilename,
         'title': title_receive,
-        'content': content_receive
+        'content': content_receive,
+        'time' : time,
     }
+    
     db.diary.insert_one(doc)
     return jsonify({'msg':'Upload complete!'})
 
